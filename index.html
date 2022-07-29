@@ -151,18 +151,47 @@
 
         function init() {
           swiper && swiper.destroy();
-          if (window.screen.availWidth < 780) {
+          if (window.innerWidth < 780) {
             swiper = new Swiper(".mySwiper", mobile_config);
             swiper.slideTo(0, false, false);
+            console.log("rebuid mobile");
           } else {
             swiper = new Swiper(".mySwiper", config);
             swiper.slideTo(1, false, false);
+            console.log("rebuid pc");
           }
         }
 
         init();
 
-        window.addEventListener("resize", jing.debounce(init, 500));
+        window.addEventListener("resize", debounce(init, 500));
+
+        function debounce(fn, ms, immediate) {
+          var t;
+          var f = true;
+          ms || (ms = 250);
+
+          return function () {
+            var args = arguments;
+            var self = this;
+            if (immediate) {
+              if (f) {
+                fn.apply(self, args);
+                f = false;
+              } else {
+                t && clearTimeout(t);
+                t = setTimeout(function () {
+                  f = true;
+                }, ms);
+              }
+            } else {
+              t && clearTimeout(t);
+              t = setTimeout(function () {
+                fn.apply(self, args);
+              }, ms);
+            }
+          };
+        }
       });
     </script>
   </body>
