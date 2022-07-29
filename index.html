@@ -64,6 +64,16 @@
       :root {
         --swiper-navigation-size: 24px;
       }
+      @media (max-width: 780px) {
+        .swiper-wrap {
+          max-width: 100%;
+          padding: 0 50px;
+          box-sizing: border-box;
+        }
+        .swiper-wrap .mySwiper {
+          width: 100%;
+        }
+      }
     </style>
   </head>
 
@@ -110,31 +120,50 @@
 
     <!-- Initialize Swiper -->
     <script>
-      var swiper = new Swiper(".mySwiper", {
-        effect: "coverflow",
-        grabCursor: true,
-        centeredSlides: true,
-        slidesPerView: "auto",
-        coverflowEffect: {
-          rotate: 0,
-          stretch: 0,
-          depth: 100,
-          modifier: 1,
-          slideShadows: true,
-          scale: 0.8
+      document.addEventListener("DOMContentLoaded", function () {
+        let config = {
+          effect: "coverflow",
+          grabCursor: true,
+          centeredSlides: true,
+          slidesPerView: "auto",
+          coverflowEffect: {
+            rotate: 0,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+            scale: 0.8
+          }
+        };
+        let mobile_config = { slidesPerView: 1, cssMode: true };
+
+        let swiper = null;
+        document
+          .querySelector(".swiper-button-next")
+          .addEventListener("click", function () {
+            swiper.slideNext();
+          });
+        document
+          .querySelector(".swiper-button-prev")
+          .addEventListener("click", function () {
+            swiper.slidePrev();
+          });
+
+        function init() {
+          swiper && swiper.destroy();
+          if (window.screen.availWidth < 780) {
+            swiper = new Swiper(".mySwiper", mobile_config);
+            swiper.slideTo(0, false, false);
+          } else {
+            swiper = new Swiper(".mySwiper", config);
+            swiper.slideTo(1, false, false);
+          }
         }
+
+        init();
+
+        window.addEventListener("resize", jing.debounce(init, 500));
       });
-      swiper.slideTo(1, false, false);
-      document
-        .querySelector(".swiper-button-next")
-        .addEventListener("click", function () {
-          swiper.slideNext();
-        });
-      document
-        .querySelector(".swiper-button-prev")
-        .addEventListener("click", function () {
-          swiper.slidePrev();
-        });
     </script>
   </body>
 </html>
